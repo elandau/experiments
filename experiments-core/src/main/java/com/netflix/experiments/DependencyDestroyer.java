@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.inject.Inject;
+import com.google.inject.Module;
 import com.netflix.experiments.lifecycle.SingletonHolder;
 
 /**
@@ -20,14 +21,14 @@ import com.netflix.experiments.lifecycle.SingletonHolder;
  *
  */
 @Singleton
-public class DepdencyDestroyer {
-    private static final Logger LOG = LoggerFactory.getLogger(DepdencyDestroyer.class);
+public class DependencyDestroyer {
+    private static final Logger LOG = LoggerFactory.getLogger(DependencyDestroyer.class);
     
-    private final List<LibraryModule> libraries;
+    private final List<Module> libraries;
     private final Set<SingletonHolder> singletons;
     
     @Inject
-    public DepdencyDestroyer(List<LibraryModule> libraries, Set<SingletonHolder> singletons) {
+    public DependencyDestroyer(List<Module> libraries, Set<SingletonHolder> singletons) {
         this.libraries = libraries;
         this.singletons = singletons;
     }
@@ -43,8 +44,10 @@ public class DepdencyDestroyer {
         }
         
         LOG.info("Destroying libraries");
-        for (LibraryModule library : Lists.reverse(libraries)) {
-            library._preDestroy();
+        for (Module library : Lists.reverse(libraries)) {
+            if (library instanceof LibraryModule) {
+                ((LibraryModule)library)._preDestroy();
+            }
         }
     }
 }

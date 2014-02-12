@@ -24,16 +24,17 @@ public class Goose {
             @Override
             protected void configure() {
                 // We will need this for the destroyer
-                bind(new TypeLiteral<List<LibraryModule>>() {}).toInstance(dependencies.getModules());
-                bind(DepdencyDestroyer.class).asEagerSingleton();
+                bind(new TypeLiteral<List<Module>>() {}).toInstance(dependencies.getModules());
+                bind(DependencyDestroyer.class);
             }
         });
-        modules.add(new LifecycleModule());
         
         // Call preConfigure() before any of the libraries guice configure() is called
         // preConfigure is called in order of dependency
-        for (LibraryModule library : dependencies.getModules()) {
-            library._preConfigure();
+        for (Module library : dependencies.getModules()) {
+            if (library instanceof LibraryModule) {
+                ((LibraryModule)library)._preConfigure();
+            }
         }
 
         // Finally, create the one and only injector

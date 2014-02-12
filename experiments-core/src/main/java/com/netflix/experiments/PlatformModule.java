@@ -17,7 +17,7 @@ import com.netflix.governator.annotations.binding.Background;
 @Singleton
 public class PlatformModule extends LibraryModule {
     @Inject
-    public PlatformModule(LoggingModule logging) {
+    public PlatformModule(LifecycleModule config, LoggingModule logging) {
         super("platform", AppStatus.Up);
     }
 

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Lists;
 import com.google.inject.AbstractModule;
+import com.google.inject.Module;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.InjectionListener;
@@ -23,7 +24,7 @@ import com.google.inject.spi.TypeListener;
 public class DependencyModule extends AbstractModule {
     private static final Logger LOG = LoggerFactory.getLogger(DependencyModule.class);
     
-    private final List<LibraryModule> modules = Lists.newArrayList();
+    private final List<Module> modules = Lists.newArrayList();
     
     @Override
     protected void configure() {
@@ -32,12 +33,12 @@ public class DependencyModule extends AbstractModule {
         bindListener(Matchers.any(), new TypeListener() {
             @Override
             public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-                if (LibraryModule.class.isAssignableFrom(type.getRawType())) {
+                if (Module.class.isAssignableFrom(type.getRawType())) {
                     encounter.register(new InjectionListener<I>() {
                         @Override
                         public void afterInjection(final I injectee) {
                             LOG.info("Found dependency : " + injectee.getClass().getCanonicalName());
-                            modules.add((LibraryModule)injectee);
+                            modules.add((Module)injectee);
                         }
                     });
                 }
@@ -45,7 +46,7 @@ public class DependencyModule extends AbstractModule {
         });
     }
     
-    public List<LibraryModule> getModules() {
+    public List<Module> getModules() {
         return modules;
     }
 

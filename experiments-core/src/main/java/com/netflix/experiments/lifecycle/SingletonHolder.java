@@ -5,10 +5,10 @@ import java.lang.reflect.Method;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.netflix.experiments.DepdencyDestroyer;
+import com.netflix.experiments.DependencyDestroyer;
 
 public class SingletonHolder {
-    private static final Logger LOG = LoggerFactory.getLogger(DepdencyDestroyer.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DependencyDestroyer.class);
     
     private final Object object;
     private final Method preDestroy;

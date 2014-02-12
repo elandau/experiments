@@ -127,7 +127,10 @@ public class AppStatusTest {
     public static class ApplicationFoo extends ApplicationModule {
 
         @Inject
-        public ApplicationFoo(LibraryAModule module, PlatformModule platform) {
+        public ApplicationFoo(
+                SystemConfigurationModule config,
+                LibraryAModule module, 
+                PlatformModule platform) {
             super("applicationFoo");
         }
         
@@ -145,6 +148,7 @@ public class AppStatusTest {
         @Inject
         public ServiceFoo(
                 BehaviorSubject<AppStatus> appStatus,
+                @Named("libb") BehaviorSubject<AppStatus> libBStatus,
                 @Background ScheduledExecutorService backgroundService
                 ) {
             appStatus.subscribe(new Action1<AppStatus>() {
@@ -173,7 +177,7 @@ public class AppStatusTest {
             TimeUnit.SECONDS.sleep(10);
         }
         finally {
-            DepdencyDestroyer destroyer = injector.getInstance(DepdencyDestroyer.class);
+            DependencyDestroyer destroyer = injector.getInstance(DependencyDestroyer.class);
             destroyer.destroy();
         }
     }

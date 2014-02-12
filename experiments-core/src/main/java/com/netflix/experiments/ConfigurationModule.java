@@ -1,10 +1,10 @@
 package com.netflix.experiments;
 
-import javax.inject.Singleton;
-
+import com.google.inject.ImplementedBy;
 import com.netflix.experiments.status.AppStatus;
+import com.netflix.governator.configuration.ConfigurationProvider;
 
-@Singleton
+@ImplementedBy(SystemConfigurationModule.class)
 public abstract class ConfigurationModule extends LibraryModule {
     public ConfigurationModule(String name) {
         super("configuration", AppStatus.Up);
@@ -14,6 +14,8 @@ public abstract class ConfigurationModule extends LibraryModule {
     protected final void configureLibrary() {
         configureConfiguration();
     }
+    
+    public abstract ConfigurationProvider getConfigurationProvider();
     
     protected abstract void configureConfiguration();
 }

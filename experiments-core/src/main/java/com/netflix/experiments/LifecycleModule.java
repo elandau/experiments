@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.Matchers;
@@ -24,6 +25,7 @@ import com.google.inject.spi.TypeListener;
 import com.netflix.experiments.lifecycle.PostConstructTask;
 import com.netflix.experiments.lifecycle.SingletonHolder;
 import com.netflix.governator.annotations.WarmUp;
+import com.netflix.governator.configuration.ConfigurationProvider;
 
 @Singleton
 public class LifecycleModule extends AbstractModule {
@@ -31,9 +33,12 @@ public class LifecycleModule extends AbstractModule {
 
     private final CopyOnWriteArraySet<SingletonHolder> singletons = new CopyOnWriteArraySet<SingletonHolder>();
     private final ExecutorService warmupExecutor;
+    private final ConfigurationProvider config;
     
-    public LifecycleModule() {
-        warmupExecutor = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("WarmUp-%d").build());
+    @Inject
+    public LifecycleModule(ConfigurationModule config) {
+        this.config = config.getConfigurationProvider();
+        this.warmupExecutor = Executors.newCachedThreadPool(new ThreadFactoryBuilder().setDaemon(true).setNameFormat("WarmUp-%d").build());
     }
     
     @Override
